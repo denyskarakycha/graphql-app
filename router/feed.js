@@ -5,4 +5,6 @@ const feedController = require('../controllers/feed.js');
 
 router.get('/posts', feedController.getPosts);
 
+router.get('/post', feedController.createPost);
+
 module.exports = router;
