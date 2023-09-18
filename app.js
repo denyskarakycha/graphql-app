@@ -1,16 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const feedRoutes = require('./router/feed.js');
 
 const MONGODB_URI =
-  "mongodb+srv://denys:295q6722822@cluster0.fk2cpgo.mongodb.net/shop";
+  "mongodb+srv://denys:295q6722822@cluster0.fk2cpgo.mongodb.net/messages?retryWrites=true&w=majority";
 
 const app = express();
 
 // app.use(bodyParser.urlencoded()) // for x-www-form <form> format
 app.use(bodyParser.json()); // application/json
+
 
 app.use((req, res, next)=> {
     res.setHeader('Access-Control-Allow-Origin', '*');
