@@ -29,7 +29,7 @@ app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode;
     const message = error.message;
-    res.status(status).join({message: message});
+    res.status(status).json({message: message});
 });
 
 mongoose.connect(MONGODB_URI)
