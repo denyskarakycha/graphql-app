@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const fileHelper = require('../util/file');
 
 const Post = require("../models/post.js");
 
@@ -111,6 +112,10 @@ exports.updatePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      if(updateImageUrl !== post.imageUrl) {
+        fileHelper.deleteFile(post.imageUrl);
+      }
+
       post.title = updateTitle;
       post.content = updateContent;
       post.imageUrl = updateImageUrl;
@@ -119,7 +124,8 @@ exports.updatePost = (req, res, next) => {
     })
     .then(result => {
       res.status(200).json({
-        message: 'Post Updated!'
+        message: 'Post Updated!',
+        post: result
       });
     })
     .catch((err) => {
@@ -129,3 +135,4 @@ exports.updatePost = (req, res, next) => {
       next(err);
     });
 }
+
