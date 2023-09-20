@@ -6,6 +6,7 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
 const feedRoutes = require('./router/feed.js');
+const authRoutes = require('./router/auth.js');
 
 const MONGODB_URI =
   "mongodb+srv://denys:295q6722822@cluster0.fk2cpgo.mongodb.net/messages?retryWrites=true&w=majority";
@@ -43,13 +44,14 @@ app.use((req, res, next)=> {
 });
 
 app.use('/feed', feedRoutes); 
-app.use('/auth', feedRoutes); 
+app.use('/auth', authRoutes); 
 
 app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode;
     const message = error.message;
-    res.status(status).json({message: message});
+    const data = error.data;
+    res.status(status).json({message: message, data: data});
 });
 
 mongoose.connect(MONGODB_URI)
