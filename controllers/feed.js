@@ -179,6 +179,14 @@ exports.deletePost = (req, res, next) => {
       return Post.findByIdAndRemove(postId);
     })
     .then(result => {
+      return User.findById(req.userId);
+    })
+    .then(user => {
+      user.posts.pull(postId);
+      return user.save();
+      
+    })
+    .then(result => {
       res.status(200).json({message: "Delete Post."});
     })
     .catch((err) => {
@@ -187,5 +195,40 @@ exports.deletePost = (req, res, next) => {
       }
       next(err);
     });
+}
+
+exports.getStatus = (req, res, next) => {
+  const userId = req.userId;
+
+  User.findById(userId)
+    .then(user => {
+      res.status(200).json({status: user.status});
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
+}
+
+exports.updateStatus = (req, res, next) => {
+  const userId = req.userId;
+  const updateStatus = req.body.status;
+
+  User.findById(userId)
+    .then(user => {
+      user.status = updateStatus;
+      return user.save();
+    })
+    .then(result => {
+      res.status(200).json({message: 'Status Updated'});
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
 }
 
