@@ -18,6 +18,7 @@ exports.signup = async (req, res, next) => {
 
   try {
     const hashedPw = await bcrypt.hash(password, 12);
+    console.log(hashedPw+'захешино');
     const user = new User({
       email: email,
       password: hashedPw,
@@ -45,8 +46,8 @@ exports.login = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    const isEqual = await bcrypt.compare(user.password, password);
-    if (isEqual) {
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
       const error = new Error("Wrong password.");
       error.statusCode = 401;
       throw error;
