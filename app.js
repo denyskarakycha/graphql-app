@@ -57,10 +57,10 @@ app.use((error, req, res, next) => {
 mongoose.connect(MONGODB_URI)
     .then(result => {
       const server = app.listen(8080);
-      const io = require('./socket.js').init(server);   
-      io.on('connection', socket => {
-        console.log('connect');
-      });
+    //   const io = require('./socket.js').init(server);   
+    //   io.on('connection', socket => {
+    //     console.log('connect');
+    //   });
     })
     .catch((err) => {
         console.log(err);
