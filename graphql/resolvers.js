@@ -9,10 +9,11 @@ module.exports = {
         if (!validator.isEmail(userInput.email)) {
             errors.push({message: 'E-Mail is invalid.'});
         }
-        if (validator.isEmpty(userInput.password) || validator.isLength(userInput.password, {min: 5})) {
+        if (validator.isEmpty(userInput.password) || !validator.isLength(userInput.password, {min: 5})) {
             errors.push({message: 'Password too short.'});
         }
         if (errors.length > 0) {
+            console.log('3');
             const error = new Error('Invalid input');
             throw error;
         }
