@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 const path = require('path');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const { graphqlHTTP } = require('express-graphql');
 
-const feedRoutes = require('./router/feed.js');
-const authRoutes = require('./router/auth.js');
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolvers = require('./graphql/resolvers');
 
 const MONGODB_URI =
   "mongodb+srv://denys:295q6722822@cluster0.fk2cpgo.mongodb.net/messages?retryWrites=true&w=majority";
@@ -43,8 +44,21 @@ app.use((req, res, next)=> {
     next();
 });
 
-app.use('/feed', feedRoutes); 
-app.use('/auth', authRoutes); 
+app.use('/graphql', graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolvers,
+    graphiql: true,
+    formatError(err) {
+        if (!err.originalError) {
+            return err;
+        }
+        const data = err.originalError.data;
+        const message = err.message || 'An error occured';
+        const code = err.originalError.code || 500;
+        return {message: message, status: code, data: data}
+    }
+}));
+
 
 app.use((error, req, res, next) => {
     console.log(error);
