@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 module.exports = (req, res, next) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
-        const error = new Error('Not autheticated.');
-        error.statusCode = 401;
-        throw error;
+        req.isAuth = false;
+        return next();
     }
 
     const token = authHeader.split(' ')[1];
@@ -13,14 +12,14 @@ module.exports = (req, res, next) => {
     try {
         decodedToken = jwt.verify(token, 'secret');
     } catch (err) {
-        err.statusCode = 500;
-        throw err;
+        req.isAuth = false;
+        return next();
     }
     if (!decodedToken) {
-        const error = new Error('Not autheticated.');
-        error.statusCode = 401;
-        throw error;
+        req.isAuth = false;
+        return next();
     }
     req.userId = decodedToken.userId;
-   // next();
+    req.isAuth = true;
+    next();
 }
